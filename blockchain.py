@@ -20,13 +20,27 @@ def new_block(self, proof, previous_hash=None):
   return block
   
 
-def new_transaction(self):
+def new_transaction(self, sender, recipient, amount):
   self.current_transactions.append({
     'sender': sender,
     'recipient': recipient,
     'amount': amount,
   })
   return self.last_block['index'] + 1
+
+def proof_of_work(self, last_proof):
+  proof = 0
+  while self.valid_proof(last_proof, proof) is False:
+    proof += 1 
+  return proof 
+
+@staticmethod
+def valid_proof(last_proof, proof):
+  """This method validates the block"""
+  guess = f'{last_proof}{proof}'.encode()
+  guess_hash = hashlib.sha256(guess).hexigest()
+  return guess_hash[:4] == "0000"
+
 
 @staticmethod
 def hash(block):
